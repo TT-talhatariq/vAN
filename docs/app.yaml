@@ -1,0 +1,288 @@
+openapi: 3.0.0
+info:
+  title: Event Management
+  version: 1.0.0
+  description: API Documentation for frontend developer
+  contact:
+    name: Talha Tariq
+    email: talhatariq@gmail.com
+servers:
+  - url: http://event.io
+    description: Live URL
+paths:
+  /user/all:
+    get:
+      summary: Get all Users
+      description: Retrieve a list of all users from the database.
+      tags:
+        - User
+      responses:
+        200:
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "123"
+                    name:
+                      type: string
+                      example: "John Doe"
+                    email:
+                      type: string
+                      example: "johndoe@example.com"
+        500:
+          description: Internal server error.
+
+  /user/{id}:
+    get:
+      summary: Get One User
+      description: Retrieve a specific user by ID.
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: User found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "123"
+                  name:
+                    type: string
+                    example: "John Doe"
+                  email:
+                    type: string
+                    example: "johndoe@example.com"
+        404:
+          description: User not found.
+        500:
+          description: Internal server error.
+
+  /user/signup:
+    post:
+      summary: Do Signup
+      description: Register a new user.
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        201:
+          description: User registered successfully.
+        400:
+          description: Bad request.
+        500:
+          description: Internal server error.
+
+  /user/login:
+    post:
+      summary: Login
+      description: Log in a user.
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        200:
+          description: Login successful.
+        401:
+          description: Unauthorized.
+        500:
+          description: Internal server error.
+
+  /user/changePassword:
+    put:
+      summary: Change Password
+      description: Change user password.
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  example: "oldPassword123"
+                newPassword:
+                  type: string
+                  example: "newPassword456"
+      responses:
+        200:
+          description: Password changed successfully.
+        400:
+          description: Invalid input.
+        401:
+          description: Unauthorized.
+        500:
+          description: Internal server error.
+
+  /event/all:
+    get:
+      summary: Get all Events
+      description: Retrieve a list of all events from the database.
+      tags:
+        - Events
+      responses:
+        200:
+          description: A list of events.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "event123"
+                    name:
+                      type: string
+                      example: "Tech Conference"
+                    date:
+                      type: string
+                      format: date
+                      example: "2024-11-05"
+                    location:
+                      type: string
+                      example: "New York"
+        500:
+          description: Internal server error.
+
+  /event/create:
+    post:
+      summary: Create a new Event
+      description: Add a new event to the database.
+      tags:
+        - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Tech Conference"
+                date:
+                  type: string
+                  format: date
+                  example: "2024-11-05"
+                location:
+                  type: string
+                  example: "New York"
+                description:
+                  type: string
+                  example: "An event focused on the latest in tech."
+      responses:
+        201:
+          description: Event created successfully.
+        400:
+          description: Bad request.
+        500:
+          description: Internal server error.
+
+  /event/edit:
+    put:
+      summary: Edit an Event
+      description: Edit an existing event in the database.
+      tags:
+        - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "event123"
+                name:
+                  type: string
+                  example: "Updated Tech Conference"
+                date:
+                  type: string
+                  format: date
+                  example: "2024-12-01"
+                location:
+                  type: string
+                  example: "San Francisco"
+                description:
+                  type: string
+                  example: "Updated description for the tech event."
+      responses:
+        200:
+          description: Event updated successfully.
+        400:
+          description: Bad request.
+        404:
+          description: Event not found.
+        500:
+          description: Internal server error.
+
+  /event/delete:
+    delete:
+      summary: Delete an Event
+      description: Delete an event from the database by its ID.
+      tags:
+        - Events
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the event to delete
+      responses:
+        200:
+          description: Event deleted successfully.
+        400:
+          description: Bad request.
+        404:
+          description: Event not found.
+        500:
+          description: Internal server error.
