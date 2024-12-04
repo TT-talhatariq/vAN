@@ -11,6 +11,7 @@ const dotenv = require('dotenv')
 const app = express()
 
 dotenv.config({ path: './.env' })
+app.use(express.json())
 
 mongoose.connect(process.env.MONGO_DB_URL).then(() => {})
 
