@@ -19,6 +19,17 @@ const sendEmail = async (options) => {
     subject: options.subject,
     text: options.text,
     html: options.html,
+    attachments: options.attachment
+      ? [
+          {
+            filename: options.attachment.originalname,
+            content: options.attachment.buffer, // Use buffer directly
+            encoding: 'base64', // Specify encoding
+            contentType: options.attachment.mimetype,
+            disposition: 'attachment',
+          },
+        ]
+      : undefined,
   }
 
   // 3. send the email

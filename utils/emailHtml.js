@@ -1,4 +1,4 @@
-exports.resetPasswordEmail = () => {
+exports.resetPasswordEmail = (resetLink) => {
   return `
         <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +25,7 @@ exports.resetPasswordEmail = () => {
                             <p>Hello,</p>
                             <p>We received a request to reset your password for your Eventify account. Click the button below to reset it:</p>
                             <div style="text-align: center; margin: 20px 0;">
-                                <a href="{{resetLink}}" style="background-color: #4caf50; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">Reset Password</a>
+                                <a href=${resetLink} style="background-color: #4caf50; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">Reset Password</a>
                             </div>
                             <p>If you didn’t request a password reset, you can safely ignore this email. Your password won’t be changed.</p>
                             <p>Thank you,<br>The Eventify Team</p>

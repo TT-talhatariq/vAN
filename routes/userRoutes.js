@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const sendEmail = require('../utils/email')
 const { resetPasswordEmail, welcomeEmail } = require('../utils/emailHtml')
+const crypto = require('crypto')
 
 router.get('/all', async (req, res) => {
   const users = await User.find()
@@ -22,6 +23,14 @@ router.get('/:id', async (req, res) => {
 router.post('/signup', async (req, res) => {
   try {
     let data = req.body
+
+    // get picture
+
+    // upload to cloud (aws s3 bucket) (google cloud buckets)
+
+    // they will return a url.
+
+    // that url we can in DB.
 
     const hash = await bcrypt.hash(data.password, 12) // encryption
 
@@ -93,7 +102,20 @@ router.post('/forgetPassword', async (req, res) => {
     return res.status(401).json({ message: 'Kindly Provide Your Email!' })
   }
 
-  const resetEmailHTML = resetPasswordEmail()
+  const user = await User.findOne({ email: email })
+
+  if (!user) {
+    return res
+      .status(401)
+      .json({ message: 'There is no user associated with the email!' })
+  }
+
+  const resetToken = user.createPasswordResetToken()
+  await user.save({ validateBeforeSave: false })
+
+  const resetLink = `https://dev-carzoomo.vercel.app/reset-password/${resetToken}`
+
+  const resetEmailHTML = resetPasswordEmail(resetLink)
 
   let options = {
     subject: 'Your Reset Link',
@@ -104,11 +126,39 @@ router.post('/forgetPassword', async (req, res) => {
 
   // 2. Send a email to our account
   await sendEmail(options)
-  res.json('Forget Password')
+  res.status(200).json({ message: 'Reset Link Sent to Your Email' })
 })
 
-router.put('/changePassword', (req, res) => {
-  res.send('Change Done')
+router.put('/changePassword/:token', async (req, res) => {
+  const token = req.params.token
+  const { newPassword, confirmNewPassword } = req.body
+
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex')
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetTokenExpires: { $gt: Date.now() },
+  })
+
+  if (!user) {
+    return res.status(400).json({ message: 'Token is invalid or expired' })
+  }
+
+  if (newPassword !== confirmNewPassword) {
+    return res.status(400).json({ message: 'Password are not matching!' })
+  }
+
+  // find
+  user.password = newPassword
+  user.passwordResetToken = undefined
+  user.passwordResetTokenExpires = undefined
+  await user.save()
+
+  res.status(200).json({ message: 'Password reset successfully!!' })
 })
+
+// Login with Google
+
+// getProfile
 
 module.exports = router
