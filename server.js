@@ -15,7 +15,7 @@ dotenv.config({ path: './.env' })
 app.use(express.json())
 
 mongoose.connect(process.env.MONGO_DB_URL).then(() => {
-  console.log('DB Conntected')
+  //   console.log('DB Conntected')
 })
 
 app.use(cors())

@@ -61,7 +61,6 @@ router.post('/send-card', upload.single('photo'), async (req, res) => {
       .status(200)
       .json({ message: 'Reset Link Sent to Your Email with attachment' })
   } catch (error) {
-    console.error('Error sending email:', error)
     res.status(500).json({ message: 'Failed to send email', error })
   }
 })

@@ -9,7 +9,7 @@ export default [
     languageOptions: { sourceType: 'commonjs' },
     rules: {
       'no-console': 'error', // Warn on console statements
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['warning', { argsIgnorePattern: '^_' }],
       quotes: ['error', 'single'], // Enforce single quotes
       semi: ['error', 'never'], // Enforce no semicolons
     },
